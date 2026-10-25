@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#153b32">
+<title>Milk Ledger</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#182b25;background:#f3f6f4}
+*{box-sizing:border-box}
+body{margin:0;padding:16px;max-width:1000px;margin-inline:auto}
+header{background:#153b32;color:#fff;padding:22px;border-radius:18px;margin-bottom:16px}
+h1{font-size:1.65rem;margin:0 0 5px} header p{margin:0;color:#d6e7df}
+.panel{background:#fff;border:1px solid #dfe8e2;border-radius:16px;padding:16px;margin-bottom:14px}
+h2{font-size:1.05rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+label{display:block;font-size:.88rem;font-weight:650;margin-bottom:5px}
+input{font:inherit;width:100%;min-width:0;padding:12px;border:1px solid #cbd8d0;border-radius:10px;background:#fff;color:#182b25}
+button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 14px;min-height:44px;cursor:pointer}
+.primary{background:#176b4c;color:white}.secondary{background:#e7f1eb;color:#174c38}.danger{background:#fff0ef;color:#9a2720}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:#edf5f0;border-radius:12px;padding:12px;min-width:0}
+.stat span{display:block;font-size:.82rem;color:#476157}.stat strong{display:block;font-size:1.15rem;overflow-wrap:anywhere;margin-top:4px}
+.filter{display:flex;align-items:end;gap:10px;flex-wrap:wrap}.filter>div{flex:1;min-width:145px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #e7ede9;white-space:nowrap}
+th{font-size:.8rem;color:#52675d}
+.empty{color:#65776d;padding:18px 0}
+.note{font-size:.84rem;color:#52675d;line-height:1.5}
+#message{margin-top:10px;font-size:.9rem;color:#9a2720}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:420px){body{padding:10px}.stats{grid-template-columns:1fr}.stat{display:flex;justify-content:space-between;align-items:center}.stat strong{margin:0}.panel{padding:12px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Milk Ledger</h1>
+  <p>Daily milk entries, missed deliveries and monthly totals</p>
+</header>
+
+<section class="panel">
+  <h2>Add a milk record</h2>
+  <form id="entryForm">
+    <div class="grid">
+      <div><label for="entryDate">Date (DD-MM-YYYY)</label><input id="entryDate" inputmode="numeric" placeholder="25-10-2026" required></div>
+      <div><label for="supplier">Supplier name</label><input id="supplier" placeholder="e.g. Harsh" required maxlength="80"></div>
+      <div><label for="liters">Milk quantity (liters)</label><input id="liters" type="number" min="0" step="0.01" value="3" required></div>
+      <div><label for="rate">Rate per liter (₹)</label><input id="rate" type="number" min="0" step="0.01" value="60" required></div>
+    </div>
+    <div class="actions">
+      <button class="primary" type="submit">Save Record</button>
+      <button class="secondary" type="button" id="noDelivery">Record No Delivery (0 L)</button>
+    </div>
+    <div id="message" role="status" aria-live="polite"></div>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Monthly summary</h2>
+  <div class="filter">
+    <div><label for="month">Choose month</label><input id="month" inputmode="numeric" placeholder="MM-YYYY"></div>
+    <button class="secondary" id="showMonth" type="button">Show Records</button>
+    <button class="secondary" id="allRecords" type="button">All Records</button>
+  </div>
+  <div class="stats" style="margin-top:14px">
+    <div class="stat"><span>Total milk</span><strong id="totalLiters">0 L</strong></div>
+    <div class="stat"><span>Total amount</span><strong id="totalAmount">₹0.00</strong></div>
+    <div class="stat"><span>Records</span><strong id="recordCount">0</strong></div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Saved records</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Supplier</th><th>Liters</th><th>Rate/L</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <p id="empty" class="empty">No records yet. Add your first milk delivery above.</p>
+</section>
+
+<section class="panel">
+  <h2>Backup and data</h2>
+  <p class="note">Records are saved only in this browser on this device. They do not sync with your PC or another phone. If you clear browser data, records may be lost. Export a backup regularly.</p>
+  <div class="actions">
+    <button class="secondary" id="exportCsv" type="button">Export CSV Backup</button>
+    <button class="danger" id="clearData" type="button">Delete All Records</button>
+  </div>
+</section>
+
+<script>
+(function(){
+  const STORAGE_KEY = "milkLedgerMobile_v1";
+  const $ = id => document.getElementById(id);
+  const today = new Date();
+  const pad = n => String(n).padStart(2,"0");
+  const displayDate = d => `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+  const isoFromDisplay = s => {
+    const m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(s.trim());
+    if(!m) return null;
+    const day=Number(m[1]), month=Number(m[2]), year=Number(m[3]);
+    const d=new Date(year,month-1,day);
+    if(d.getFullYear()!==year || d.getMonth()!==month-1 || d.getDate()!==day) return null;
+    return `${year}-${pad(month)}-${pad(day)}`;
+  };
+  const displayFromIso = iso => {
+    const [y,m,d]=iso.split("-");
+    return `${d}-${m}-${y}`;
+  };
+  const rupees = n => "₹" + Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  let records = [];
+  let activeMonth = "";
+  try { records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); if(!Array.isArray(records)) records=[]; }
+  catch(e) { records=[]; }
+  $("entryDate").value = displayDate(today);
+  $("month").value = `${pad(today.getMonth()+1)}-${today.getFullYear()}`;
+
+  function save(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }
+  function setMessage(text,isError=false){ $("message").textContent=text; $("message").style.color=isError?"#9a2720":"#176b4c"; }
+  function addRecord(forceZero=false){
+    const dateText=$("entryDate").value.trim();
+    const iso=isoFromDisplay(dateText);
+    const supplier=$("supplier").value.trim();
+    const liters=forceZero?0:Number($("liters").value);
+    const rate=Number($("rate").value);
+    if(!iso){setMessage("Date format must be DD-MM-YYYY, for example 25-10-2026.",true);return;}
+    if(!supplier){setMessage("Enter the supplier name.",true);return;}
+    if(!Number.isFinite(liters)||liters<0||!Number.isFinite(rate)||rate<0){setMessage("Liters and rate must be valid numbers, zero or greater.",true);return;}
+    records.push({id:(Date.now().toString(36)+Math.random().toString(36).slice(2,7)),date:iso,supplier,liters,rate});
+    try{save();}catch(e){records.pop();setMessage("Could not save data in this browser. Check browser storage settings.",true);return;}
+    activeMonth=iso.slice(0,7);
+    $("month").value=`${iso.slice(5,7)}-${iso.slice(0,4)}`;
+    $("liters").value=forceZero?"0":"3";
+    setMessage(forceZero?"No-delivery record saved.":"Milk record saved.");
+    render();
+  }
+  function visibleRecords(){
+    if(!activeMonth) return [...records].sort((a,b)=>b.date.localeCompare(a.date));
+    return records.filter(r=>r.date.slice(0,7)===activeMonth).sort((a,b)=>b.date.localeCompare(a.date));
+  }
+  function render(){
+    const list=visibleRecords();
+    $("rows").replaceChildren();
+    let liters=0, amount=0;
+    list.forEach(r=>{
+      liters+=r.liters; amount+=r.liters*r.rate;
+      const tr=document.createElement("tr");
+      const values=[displayFromIso(r.date),r.supplier,Number(r.liters).toLocaleString("en-IN"),rupees(r.rate),rupees(r.liters*r.rate),r.liters===0?"No delivery":"Delivered"];
+      values.forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
+      const action=document.createElement("td");
+      const btn=document.createElement("button");btn.type="button";btn.className="danger";btn.textContent="Delete";
+      btn.addEventListener("click",()=>{
+        if(confirm("Delete this record?")){records=records.filter(x=>x.id!==r.id);save();render();}
+      });
+      action.appendChild(btn);tr.appendChild(action);$("rows").appendChild(tr);
+    });
+    $("empty").hidden=list.length>0;
+    $("totalLiters").textContent=liters.toLocaleString("en-IN",{maximumFractionDigits:2})+" L";
+    $("totalAmount").textContent=rupees(amount);
+    $("recordCount").textContent=String(list.length);
+  }
+  $("entryForm").addEventListener("submit",e=>{e.preventDefault();addRecord(false);});
+  $("noDelivery").addEventListener("click",()=>addRecord(true));
+  $("showMonth").addEventListener("click",()=>{
+    const m=/^(\d{2})-(\d{4})$/.exec($("month").value.trim());
+    if(!m||Number(m[1])<1||Number(m[1])>12){setMessage("Enter month as MM-YYYY, for example 10-2026.",true);return;}
+    activeMonth=`${m[2]}-${m[1]}`;setMessage("");render();
+  });
+  $("allRecords").addEventListener("click",()=>{activeMonth="";setMessage("Showing all records.");render();});
+  $("exportCsv").addEventListener("click",()=>{
+    const lines=[["Date","Supplier","Liters","Rate per liter","Amount","Status"],...records.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(r=>[displayFromIso(r.date),r.supplier,r.liters,r.rate,(r.liters*r.rate).toFixed(2),r.liters===0?"No delivery":"Delivered"])];
+    const csv=lines.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
+    const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
+    const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="milk-ledger-backup.csv";a.click();URL.revokeObjectURL(url);
+  });
+  $("clearData").addEventListener("click",()=>{
+    if(confirm("This permanently deletes every record saved in this browser. Export a backup first if needed. Continue?")){records=[];save();activeMonth="";render();setMessage("All records deleted.");}
+  });
+  render();
+})();
+</script>
+</body>
+</html>

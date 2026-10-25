@@ -3,183 +3,182 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#153b32">
+<meta name="theme-color" content="#f5f8f2">
 <title>Milk Ledger</title>
 <style>
-:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#182b25;background:#f3f6f4}
-*{box-sizing:border-box}
-body{margin:0;padding:16px;max-width:1000px;margin-inline:auto}
-header{background:#153b32;color:#fff;padding:22px;border-radius:18px;margin-bottom:16px}
-h1{font-size:1.65rem;margin:0 0 5px} header p{margin:0;color:#d6e7df}
-.panel{background:#fff;border:1px solid #dfe8e2;border-radius:16px;padding:16px;margin-bottom:14px}
-h2{font-size:1.05rem;margin:0 0 14px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-label{display:block;font-size:.88rem;font-weight:650;margin-bottom:5px}
-input{font:inherit;width:100%;min-width:0;padding:12px;border:1px solid #cbd8d0;border-radius:10px;background:#fff;color:#182b25}
-button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 14px;min-height:44px;cursor:pointer}
-.primary{background:#176b4c;color:white}.secondary{background:#e7f1eb;color:#174c38}.danger{background:#fff0ef;color:#9a2720}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.stat{background:#edf5f0;border-radius:12px;padding:12px;min-width:0}
-.stat span{display:block;font-size:.82rem;color:#476157}.stat strong{display:block;font-size:1.15rem;overflow-wrap:anywhere;margin-top:4px}
-.filter{display:flex;align-items:end;gap:10px;flex-wrap:wrap}.filter>div{flex:1;min-width:145px}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:.9rem}
-th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #e7ede9;white-space:nowrap}
-th{font-size:.8rem;color:#52675d}
-.empty{color:#65776d;padding:18px 0}
-.note{font-size:.84rem;color:#52675d;line-height:1.5}
-#message{margin-top:10px;font-size:.9rem;color:#9a2720}
-@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:420px){body{padding:10px}.stats{grid-template-columns:1fr}.stat{display:flex;justify-content:space-between;align-items:center}.stat strong{margin:0}.panel{padding:12px}}
+:root{--ink:#20342d;--muted:#718078;--line:#e3eae4;--bg:#f5f8f2;--card:#fff;--green:#276749;--green2:#e5f3e9;--orange:#a95d20;--orangebg:#fff2e5;--red:#b43b3b;--shadow:0 8px 24px rgba(30,60,43,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:760px;margin:auto;padding:18px 14px 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:11px}.logo{width:46px;height:46px;border-radius:15px;background:var(--green2);display:grid;place-items:center;font-size:24px}.brand h1{font-size:21px;line-height:1.1;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}.month{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 10px;color:var(--ink);font:inherit;font-size:14px;max-width:145px}
+.hero{background:linear-gradient(130deg,#245f47,#357b5a);color:white;border-radius:22px;padding:21px;margin-bottom:14px;box-shadow:var(--shadow)}.hero .eyebrow{font-size:12px;opacity:.8;text-transform:uppercase;letter-spacing:.09em}.hero .total{font-size:34px;font-weight:750;letter-spacing:-.04em;margin:5px 0 12px}.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hero-stat{background:#ffffff19;border:1px solid #ffffff24;border-radius:13px;padding:11px}.hero-stat small{display:block;opacity:.8;font-size:12px}.hero-stat strong{display:block;font-size:17px;margin-top:3px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);min-width:0}.section-title{font-size:16px;font-weight:750;margin:0 0 12px}.field{display:block;margin:10px 0}.field span{display:block;color:var(--muted);font-size:12px;font-weight:650;margin:0 0 6px}.field input{width:100%;min-width:0;border:1px solid #dce5dd;background:#fbfdfb;border-radius:11px;padding:12px;font:inherit;color:var(--ink);outline:none}.field input:focus{border-color:#6caa83;box-shadow:0 0 0 3px #dff0e4}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:12px;padding:12px 14px;font:inherit;font-weight:700;cursor:pointer;min-height:45px}.primary{background:var(--green);color:#fff;width:100%}.secondary{background:var(--green2);color:var(--green)}.no-milk{width:100%;margin-top:9px;background:var(--orangebg);color:var(--orange);border:1px solid #f4dfca}.small-note{font-size:12px;color:var(--muted);margin:8px 0 0}.payments{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.payments .field{margin-bottom:0}.payments .btn{white-space:nowrap}.list-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.entries{display:grid;gap:9px}.entry{border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;justify-content:space-between;gap:12px;align-items:center}.entry-main{min-width:0}.entry-date{font-weight:750}.entry-meta{font-size:12px;color:var(--muted);margin-top:3px}.entry-right{text-align:right;white-space:nowrap}.amount{font-weight:800}.tag{display:inline-block;font-size:11px;border-radius:99px;padding:3px 8px;background:var(--green2);color:var(--green);margin-top:4px}.tag.off{background:var(--orangebg);color:var(--orange)}.entry-actions{display:flex;gap:6px;margin-top:6px;justify-content:flex-end}.text-btn{background:none;border:0;color:var(--muted);padding:3px 0 3px 8px;font:inherit;font-size:12px;cursor:pointer}.text-btn.delete{color:var(--red)}.empty{text-align:center;color:var(--muted);padding:22px 10px;font-size:14px}.backup-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.file-label{display:block;text-align:center}.file-label input{display:none}.foot{text-align:center;color:var(--muted);font-size:11px;margin-top:18px}.toast{margin-top:10px;color:var(--green);font-size:13px;min-height:18px}
+@media(max-width:520px){.wrap{padding:14px 11px 30px}.top{align-items:flex-start;flex-wrap:wrap}.month{margin-left:auto}.hero{padding:18px}.hero .total{font-size:31px}.cards{grid-template-columns:1fr}.card{padding:14px}.brand h1{font-size:20px}}
 </style>
 </head>
 <body>
-<header>
-  <h1>Milk Ledger</h1>
-  <p>Daily milk entries, missed deliveries and monthly totals</p>
-</header>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo" aria-hidden="true">🥛</div><div><h1>Milk Ledger</h1><div class="sub">Your household milk tracker</div></div></div>
+    <input id="month" type="hidden" aria-label="Selected month">
+  </header>
 
-<section class="panel">
-  <h2>Add a milk record</h2>
-  <form id="entryForm">
-    <div class="grid">
-      <div><label for="entryDate">Date (DD-MM-YYYY)</label><input id="entryDate" inputmode="numeric" placeholder="25-10-2026" required></div>
-      <div><label for="supplier">Supplier name</label><input id="supplier" placeholder="e.g. Harsh" required maxlength="80"></div>
-      <div><label for="liters">Milk quantity (liters)</label><input id="liters" type="number" min="0" step="0.01" value="3" required></div>
-      <div><label for="rate">Rate per liter (₹)</label><input id="rate" type="number" min="0" step="0.01" value="60" required></div>
+  <section class="hero" aria-live="polite">
+    <div class="eyebrow">Milk bill · Selected month</div>
+    <div class="total" id="totalBill">₹0.00</div>
+    <div class="hero-grid">
+      <div class="hero-stat"><small>Milk received</small><strong id="totalLitres">0 L</strong></div>
+      <div class="hero-stat"><small>Payments made</small><strong id="totalPaid">₹0.00</strong></div>
+      <div class="hero-stat"><small>Amount remaining</small><strong id="balance">₹0.00</strong></div>
+      <div class="hero-stat"><small>Milk days</small><strong id="milkDays">0 days</strong></div>
     </div>
-    <div class="actions">
-      <button class="primary" type="submit">Save Record</button>
-      <button class="secondary" type="button" id="noDelivery">Record No Delivery (0 L)</button>
+  </section>
+
+  <div class="cards">
+    <section class="card">
+      <h2 class="section-title">Daily milk entry</h2>
+      <form id="entryForm">
+        <input id="entryId" type="hidden">
+        <label class="field"><span>Date</span><input id="entryDate" type="date" required></label>
+        <div class="two">
+          <label class="field"><span>Quantity (litres)</span><input id="qty" type="number" min="0.01" step="0.01" placeholder="e.g. 2" required></label>
+          <label class="field"><span>Rate per litre (₹)</span><input id="rate" type="number" min="0" step="0.01" placeholder="e.g. 60" required></label>
+        </div>
+        <div class="small-note" id="preview">Enter quantity and rate to calculate the cost.</div>
+        <button class="btn primary" type="submit" id="saveEntry">Save milk entry</button>
+        <button class="btn no-milk" type="button" id="noMilk">☀ No Milk Today</button>
+        <div class="toast" id="entryToast" role="status"></div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Record a payment</h2>
+      <form id="paymentForm">
+        <label class="field"><span>Payment date</span><input id="payDate" type="date" required></label>
+        <label class="field"><span>Amount paid (₹)</span><input id="payAmount" type="number" min="0.01" step="0.01" placeholder="e.g. 1000" required></label>
+        <label class="field"><span>Note (optional)</span><input id="payNote" type="text" maxlength="80" placeholder="e.g. Paid by UPI"></label>
+        <button class="btn primary" type="submit">Save payment</button>
+        <div class="toast" id="payToast" role="status"></div>
+      </form>
+    </section>
+  </div>
+
+  <section class="card" style="margin-bottom:14px">
+    <div class="list-head"><h2 class="section-title" style="margin-bottom:0">Daily history</h2><span class="sub" id="entryCount">0 records</span></div>
+    <div id="entries" class="entries" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card" style="margin-bottom:14px">
+    <div class="list-head"><h2 class="section-title" style="margin-bottom:0">Payments</h2><span class="sub" id="paymentCount">0 payments</span></div>
+    <div id="payments" class="entries" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">Backup & restore</h2>
+    <p class="small-note" style="margin:0 0 12px">Your records stay in this browser on this phone. Export backups regularly and keep a copy somewhere safe.</p>
+    <div class="backup-actions">
+      <button class="btn secondary" id="exportBtn" type="button">Export CSV</button>
+      <label class="btn secondary file-label">Import backup<input id="importFile" type="file" accept=".json,application/json"></label>
     </div>
-    <div id="message" role="status" aria-live="polite"></div>
-  </form>
-</section>
-
-<section class="panel">
-  <h2>Monthly summary</h2>
-  <div class="filter">
-    <div><label for="month">Choose month</label><input id="month" inputmode="numeric" placeholder="MM-YYYY"></div>
-    <button class="secondary" id="showMonth" type="button">Show Records</button>
-    <button class="secondary" id="allRecords" type="button">All Records</button>
-  </div>
-  <div class="stats" style="margin-top:14px">
-    <div class="stat"><span>Total milk</span><strong id="totalLiters">0 L</strong></div>
-    <div class="stat"><span>Total amount</span><strong id="totalAmount">₹0.00</strong></div>
-    <div class="stat"><span>Records</span><strong id="recordCount">0</strong></div>
-  </div>
-</section>
-
-<section class="panel">
-  <h2>Saved records</h2>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Date</th><th>Supplier</th><th>Liters</th><th>Rate/L</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
-      <tbody id="rows"></tbody>
-    </table>
-  </div>
-  <p id="empty" class="empty">No records yet. Add your first milk delivery above.</p>
-</section>
-
-<section class="panel">
-  <h2>Backup and data</h2>
-  <p class="note">Records are saved only in this browser on this device. They do not sync with your PC or another phone. If you clear browser data, records may be lost. Export a backup regularly.</p>
-  <div class="actions">
-    <button class="secondary" id="exportCsv" type="button">Export CSV Backup</button>
-    <button class="danger" id="clearData" type="button">Delete All Records</button>
-  </div>
-</section>
-
+    <div class="toast" id="backupToast" role="status"></div>
+    <p class="small-note">This app works offline after it has loaded, but browser data can still be lost if you clear site storage or reset your phone.</p>
+  </section>
+  <div class="foot">Private to this browser profile · No account · No sync</div>
+</div>
 <script>
 (function(){
-  const STORAGE_KEY = "milkLedgerMobile_v1";
-  const $ = id => document.getElementById(id);
-  const today = new Date();
-  const pad = n => String(n).padStart(2,"0");
-  const displayDate = d => `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
-  const isoFromDisplay = s => {
-    const m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(s.trim());
-    if(!m) return null;
-    const day=Number(m[1]), month=Number(m[2]), year=Number(m[3]);
-    const d=new Date(year,month-1,day);
-    if(d.getFullYear()!==year || d.getMonth()!==month-1 || d.getDate()!==day) return null;
-    return `${year}-${pad(month)}-${pad(day)}`;
-  };
-  const displayFromIso = iso => {
-    const [y,m,d]=iso.split("-");
-    return `${d}-${m}-${y}`;
-  };
-  const rupees = n => "₹" + Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
-  let records = [];
-  let activeMonth = "";
-  try { records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); if(!Array.isArray(records)) records=[]; }
-  catch(e) { records=[]; }
-  $("entryDate").value = displayDate(today);
-  $("month").value = `${pad(today.getMonth()+1)}-${today.getFullYear()}`;
-
-  function save(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }
-  function setMessage(text,isError=false){ $("message").textContent=text; $("message").style.color=isError?"#9a2720":"#176b4c"; }
-  function addRecord(forceZero=false){
-    const dateText=$("entryDate").value.trim();
-    const iso=isoFromDisplay(dateText);
-    const supplier=$("supplier").value.trim();
-    const liters=forceZero?0:Number($("liters").value);
-    const rate=Number($("rate").value);
-    if(!iso){setMessage("Date format must be DD-MM-YYYY, for example 25-10-2026.",true);return;}
-    if(!supplier){setMessage("Enter the supplier name.",true);return;}
-    if(!Number.isFinite(liters)||liters<0||!Number.isFinite(rate)||rate<0){setMessage("Liters and rate must be valid numbers, zero or greater.",true);return;}
-    records.push({id:(Date.now().toString(36)+Math.random().toString(36).slice(2,7)),date:iso,supplier,liters,rate});
-    try{save();}catch(e){records.pop();setMessage("Could not save data in this browser. Check browser storage settings.",true);return;}
-    activeMonth=iso.slice(0,7);
-    $("month").value=`${iso.slice(5,7)}-${iso.slice(0,4)}`;
-    $("liters").value=forceZero?"0":"3";
-    setMessage(forceZero?"No-delivery record saved.":"Milk record saved.");
-    render();
+const KEY='milkLedgerHousehold_v2';
+const $=id=>document.getElementById(id);
+const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const currentMonth=()=>todayISO().slice(0,7);
+const fmtMoney=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(Number(n)||0);
+const fmtDate=s=>{if(!s)return '';const [y,m,d]=s.split('-');return `${d}-${m}-${y}`};
+let data={entries:[],payments:[]};
+try{const raw=localStorage.getItem(KEY);if(raw){const p=JSON.parse(raw);data={entries:Array.isArray(p.entries)?p.entries:[],payments:Array.isArray(p.payments)?p.payments:[]}}}catch(e){}
+function persist(){
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data));
+    return true;
+  } catch(e) {
+    alert('Could not save records on this phone. Export a backup and check browser storage.');
+    return false;
   }
-  function visibleRecords(){
-    if(!activeMonth) return [...records].sort((a,b)=>b.date.localeCompare(a.date));
-    return records.filter(r=>r.date.slice(0,7)===activeMonth).sort((a,b)=>b.date.localeCompare(a.date));
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function selectedMonth(){return $('month').value||currentMonth()}
+function monthlyEntries(){return data.entries.filter(x=>x.date.startsWith(selectedMonth()))}
+function monthlyPayments(){return data.payments.filter(x=>x.date.startsWith(selectedMonth()))}
+function render(){
+ const es=monthlyEntries(), ps=monthlyPayments();
+ const litres=es.filter(x=>!x.noMilk).reduce((s,x)=>s+Number(x.qty||0),0);
+ const bill=es.reduce((s,x)=>s+Number(x.cost||0),0);
+ const paid=ps.reduce((s,x)=>s+Number(x.amount||0),0);
+ $('totalBill').textContent=fmtMoney(bill);$('totalLitres').textContent=`${litres.toLocaleString('en-IN',{maximumFractionDigits:2})} L`;
+ $('totalPaid').textContent=fmtMoney(paid);$('balance').textContent=fmtMoney(bill-paid);$('milkDays').textContent=`${es.filter(x=>!x.noMilk).length} days`;
+ $('entryCount').textContent=`${es.length} records`; $('paymentCount').textContent=`${ps.length} payments`;
+ const sorted=[...es].sort((a,b)=>b.date.localeCompare(a.date));
+ $('entries').innerHTML=sorted.length?sorted.map(x=>`<article class="entry"><div class="entry-main"><div class="entry-date">${fmtDate(x.date)}</div><div class="entry-meta">${x.noMilk?'No milk received':`${Number(x.qty)} L × ${fmtMoney(x.rate)}/L`}</div><span class="tag ${x.noMilk?'off':''}">${x.noMilk?'No milk':'Milk received'}</span></div><div class="entry-right"><div class="amount">${fmtMoney(x.cost)}</div><div class="entry-actions"><button class="text-btn" data-edit="${x.id}">Edit</button><button class="text-btn delete" data-delete="${x.id}">Delete</button></div></div></article>`).join(''):'<div class="empty">No milk entries for this month yet.</div>';
+ const sortedP=[...ps].sort((a,b)=>b.date.localeCompare(a.date));
+ $('payments').innerHTML=sortedP.length?sortedP.map(x=>`<article class="entry"><div class="entry-main"><div class="entry-date">${fmtDate(x.date)}</div><div class="entry-meta">${escapeHtml(x.note||'Payment')}</div></div><div class="entry-right"><div class="amount">${fmtMoney(x.amount)}</div><div class="entry-actions"><button class="text-btn delete" data-paydelete="${x.id}">Delete</button></div></div></article>`).join(''):'<div class="empty">No payments recorded for this month yet.</div>';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function updatePreview(){const q=Number($('qty').value),r=Number($('rate').value);$('preview').textContent=$('qty').value!==''&&$('rate').value!==''&&q>0&&r>=0?`Daily cost: ${fmtMoney(q*r)}`:'Enter quantity and rate to calculate the cost.'}
+function resetEntry(){ $('entryId').value='';$('entryDate').value=todayISO();$('qty').value='';$('rate').value='';$('saveEntry').textContent='Save milk entry';updatePreview()}
+$('month').value=currentMonth();$('entryDate').value=todayISO();$('payDate').value=todayISO();
+$('qty').addEventListener('input',updatePreview);$('rate').addEventListener('input',updatePreview);$('month').addEventListener('change',render);
+$('entryForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const date=$('entryDate').value, q=Number($('qty').value), r=Number($('rate').value);
+  if(!date || $('qty').value==='' || $('rate').value==='' || !Number.isFinite(q) || q<=0 || !Number.isFinite(r) || r<0){
+    $('entryToast').textContent='Please enter a date, quantity greater than 0, and a valid rate.';
+    return;
   }
-  function render(){
-    const list=visibleRecords();
-    $("rows").replaceChildren();
-    let liters=0, amount=0;
-    list.forEach(r=>{
-      liters+=r.liters; amount+=r.liters*r.rate;
-      const tr=document.createElement("tr");
-      const values=[displayFromIso(r.date),r.supplier,Number(r.liters).toLocaleString("en-IN"),rupees(r.rate),rupees(r.liters*r.rate),r.liters===0?"No delivery":"Delivered"];
-      values.forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
-      const action=document.createElement("td");
-      const btn=document.createElement("button");btn.type="button";btn.className="danger";btn.textContent="Delete";
-      btn.addEventListener("click",()=>{
-        if(confirm("Delete this record?")){records=records.filter(x=>x.id!==r.id);save();render();}
-      });
-      action.appendChild(btn);tr.appendChild(action);$("rows").appendChild(tr);
-    });
-    $("empty").hidden=list.length>0;
-    $("totalLiters").textContent=liters.toLocaleString("en-IN",{maximumFractionDigits:2})+" L";
-    $("totalAmount").textContent=rupees(amount);
-    $("recordCount").textContent=String(list.length);
-  }
-  $("entryForm").addEventListener("submit",e=>{e.preventDefault();addRecord(false);});
-  $("noDelivery").addEventListener("click",()=>addRecord(true));
-  $("showMonth").addEventListener("click",()=>{
-    const m=/^(\d{2})-(\d{4})$/.exec($("month").value.trim());
-    if(!m||Number(m[1])<1||Number(m[1])>12){setMessage("Enter month as MM-YYYY, for example 10-2026.",true);return;}
-    activeMonth=`${m[2]}-${m[1]}`;setMessage("");render();
-  });
-  $("allRecords").addEventListener("click",()=>{activeMonth="";setMessage("Showing all records.");render();});
-  $("exportCsv").addEventListener("click",()=>{
-    const lines=[["Date","Supplier","Liters","Rate per liter","Amount","Status"],...records.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(r=>[displayFromIso(r.date),r.supplier,r.liters,r.rate,(r.liters*r.rate).toFixed(2),r.liters===0?"No delivery":"Delivered"])];
-    const csv=lines.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
-    const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
-    const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="milk-ledger-backup.csv";a.click();URL.revokeObjectURL(url);
-  });
-  $("clearData").addEventListener("click",()=>{
-    if(confirm("This permanently deletes every record saved in this browser. Export a backup first if needed. Continue?")){records=[];save();activeMonth="";render();setMessage("All records deleted.");}
-  });
+  const previous=data.entries;
+  const id=$('entryId').value||uid();
+  data.entries=data.entries.filter(x=>x.id!==id && x.date!==date);
+  data.entries.push({id,date,qty:q,rate:r,cost:Math.round(q*r*100)/100,noMilk:false});
+  if(!persist()){data.entries=previous;return;}
+  $('month').value=date.slice(0,7);
+  $('entryToast').textContent='Milk entry saved successfully.';
+  resetEntry();
   render();
+});
+$('noMilk').addEventListener('click',()=>{
+  const date=$('entryDate').value||todayISO();
+  if(!date){$('entryToast').textContent='Please choose a date first.';return;}
+  if(!confirm(`Mark ${fmtDate(date)} as “No Milk Today”?`))return;
+  const previous=data.entries;
+  data.entries=data.entries.filter(x=>x.date!==date);
+  data.entries.push({id:uid(),date,qty:0,rate:0,cost:0,noMilk:true});
+  if(!persist()){data.entries=previous;return;}
+  $('month').value=date.slice(0,7);
+  $('entryToast').textContent=`${fmtDate(date)} marked as no milk.`;
+  resetEntry();
+  render();
+});
+$('entries').addEventListener('click',e=>{const ed=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(ed){const x=data.entries.find(v=>v.id===ed.dataset.edit);if(!x)return;$('entryId').value=x.id;$('entryDate').value=x.date;if(x.noMilk){$('qty').value='';$('rate').value=''}else{$('qty').value=x.qty;$('rate').value=x.rate}$('saveEntry').textContent='Update entry';updatePreview();window.scrollTo({top:0,behavior:'smooth'})}if(del){const x=data.entries.find(v=>v.id===del.dataset.delete);if(x&&confirm(`Delete entry for ${fmtDate(x.date)}?`)){data.entries=data.entries.filter(v=>v.id!==x.id);persist();render()}}});
+$('paymentForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const date=$('payDate').value, amount=Number($('payAmount').value);
+  if(!date || $('payAmount').value==='' || !Number.isFinite(amount) || amount<=0){
+    $('payToast').textContent='Please enter a payment date and an amount greater than ₹0.';
+    return;
+  }
+  const previous=data.payments;
+  data.payments.push({id:uid(),date,amount:Math.round(amount*100)/100,note:$('payNote').value.trim()});
+  if(!persist()){data.payments=previous;return;}
+  $('month').value=date.slice(0,7);
+  $('payAmount').value='';
+  $('payNote').value='';
+  $('payToast').textContent=`Payment of ${fmtMoney(amount)} saved successfully.`;
+  render();
+});
+$('payments').addEventListener('click',e=>{const b=e.target.closest('[data-paydelete]');if(!b)return;const x=data.payments.find(v=>v.id===b.dataset.paydelete);if(x&&confirm(`Delete payment ${fmtMoney(x.amount)} on ${fmtDate(x.date)}?`)){data.payments=data.payments.filter(v=>v.id!==x.id);persist();render()}});
+$('exportBtn').addEventListener('click',()=>{const rows=[['type','date','quantity_litres','rate_per_litre','amount','no_milk','note']];data.entries.forEach(x=>rows.push(['milk',x.date,x.qty,x.rate,x.cost,x.noMilk?'yes':'no','']));data.payments.forEach(x=>rows.push(['payment',x.date,'','','', '',x.note||'']));data.payments.forEach(x=>{const row=rows.find(r=>r[0]==='payment'&&r[1]===x.date&&r[6]===(x.note||''));if(row)row[4]=x.amount});const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');download(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),`milk-ledger-${todayISO()}.csv`);$('backupToast').textContent='CSV backup exported.'});
+function download(blob,name){const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+// JSON backup is lossless and supports restoring entries and payments.
+const exportBackup=document.createElement('button');exportBackup.className='btn secondary';exportBackup.type='button';exportBackup.textContent='Export full backup';exportBackup.style.marginTop='9px';$('backupToast').before(exportBackup);
+exportBackup.addEventListener('click',()=>{download(new Blob([JSON.stringify({version:2,exportedAt:new Date().toISOString(),...data},null,2)],{type:'application/json'}),`milk-ledger-backup-${todayISO()}.json`);$('backupToast').textContent='Full backup exported.'});
+$('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const obj=JSON.parse(await f.text());if(!Array.isArray(obj.entries)||!Array.isArray(obj.payments))throw new Error('Invalid backup');if(!confirm('Import this backup and replace the records currently stored on this phone? Export a backup of current records first if needed.'))return;data={entries:obj.entries,payments:obj.payments};persist();render();$('backupToast').textContent='Backup restored successfully.'}catch(err){$('backupToast').textContent='Could not import this file. Choose a full Milk Ledger JSON backup.'}finally{e.target.value=''}});
+render();
 })();
 </script>
 </body>

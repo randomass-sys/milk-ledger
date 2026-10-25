@@ -27,7 +27,8 @@
     <div class="hero-grid">
       <div class="hero-stat"><small>Milk received</small><strong id="totalLitres">0 L</strong></div>
       <div class="hero-stat"><small>Payments made</small><strong id="totalPaid">₹0.00</strong></div>
-      <div class="hero-stat"><small>Amount remaining</small><strong id="balance">₹0.00</strong></div>
+      <div class="hero-stat"><small>Amount remaining (due)</small><strong id="balance">₹0.00</strong></div>
+      <div class="hero-stat"><small>Advance balance</small><strong id="advanceBalance">₹0.00</strong></div>
       <div class="hero-stat"><small>Milk days</small><strong id="milkDays">0 days</strong></div>
     </div>
   </section>
@@ -112,7 +113,11 @@ function render(){
  const bill=es.reduce((s,x)=>s+Number(x.cost||0),0);
  const paid=ps.reduce((s,x)=>s+Number(x.amount||0),0);
  $('totalBill').textContent=fmtMoney(bill);$('totalLitres').textContent=`${litres.toLocaleString('en-IN',{maximumFractionDigits:2})} L`;
- $('totalPaid').textContent=fmtMoney(paid);$('balance').textContent=fmtMoney(bill-paid);$('milkDays').textContent=`${es.filter(x=>!x.noMilk).length} days`;
+ const net=paid-bill;
+ $('totalPaid').textContent=fmtMoney(paid);
+ $('balance').textContent=fmtMoney(Math.max(0,-net));
+ $('advanceBalance').textContent=fmtMoney(Math.max(0,net));
+ $('milkDays').textContent=`${es.filter(x=>!x.noMilk).length} days`;
  $('entryCount').textContent=`${es.length} records`; $('paymentCount').textContent=`${ps.length} payments`;
  const sorted=[...es].sort((a,b)=>b.date.localeCompare(a.date));
  $('entries').innerHTML=sorted.length?sorted.map(x=>`<article class="entry"><div class="entry-main"><div class="entry-date">${fmtDate(x.date)}</div><div class="entry-meta">${x.noMilk?'No milk received':`${Number(x.qty)} L × ${fmtMoney(x.rate)}/L`}</div><span class="tag ${x.noMilk?'off':''}">${x.noMilk?'No milk':'Milk received'}</span></div><div class="entry-right"><div class="amount">${fmtMoney(x.cost)}</div><div class="entry-actions"><button class="text-btn" data-edit="${x.id}">Edit</button><button class="text-btn delete" data-delete="${x.id}">Delete</button></div></div></article>`).join(''):'<div class="empty">No milk entries for this month yet.</div>';
@@ -144,7 +149,7 @@ $('entryForm').addEventListener('submit',e=>{
 $('noMilk').addEventListener('click',()=>{
   const date=$('entryDate').value||todayISO();
   if(!date){$('entryToast').textContent='Please choose a date first.';return;}
-  if(!confirm(`Mark ${fmtDate(date)} as “No Milk Today”?`))return;
+  if(!confirm(`Mark ${fmtDate(date)} as “No Milk Today”? Any milk entry on this same date will be replaced with ₹0 for that date only. Entries for other dates and all payments will remain unchanged.`))return;
   const previous=data.entries;
   data.entries=data.entries.filter(x=>x.date!==date);
   data.entries.push({id:uid(),date,qty:0,rate:0,cost:0,noMilk:true});
